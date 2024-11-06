@@ -1,61 +1,55 @@
-﻿const v_port={id:"hc",h_scale:null,vyska:null,
+﻿const v_port={
+id:"hc", // id hlavního kontejneru
 handleEvent(){
 
-let vyska=window.visualViewport.height;
+let vyska; // proměnná, která bude požita jako výška v PX
 
-const o=document.getElementById(this.id);
-const o1=document.body;
-
-o.style.minHeight=vyska+"px";
-o.style.height=vyska+"px";
-o.style.maxHeight=vyska+"px";
-
-o1.style.minHeight=vyska+"px";
-o1.style.height=vyska+"px";
-o1.style.maxHeight=vyska+"px";
-
-let dorovnat="";
-if(visualViewport.scale<1&&visualViewport.scale!=this.h_scale)
+if(window&&window.visualViewport) // test - zda je visualViewport podporováno
 {
-this.h_scale=visualViewport.scale;
-dorovnat=(visualViewport.scale-1)+1;
-o.style["-webkit-transform"]="scale("+dorovnat+")"; /* prefix css */
-o.style["-ms-transform"]="scale("+dorovnat+")"; /* prefix css */
-o.style.transform="scale("+dorovnat+")";
-
-o1.style["-webkit-transform"]="scale("+dorovnat+")"; /* prefix css */
-o1.style["-ms-transform"]="scale("+dorovnat+")"; /* prefix css */
-o1.style.transform="scale("+dorovnat+")";
+// pokud je visualViewport API podporováno
+const v_vw_port=parseInt(window.visualViewport.height); // výška visual view portu
+vyska=`${v_vw_port}px`; // výška visual view portu pro CSS úpravu výšky hlavního kontejneru
 }
-else if(visualViewport.scale>=1&&visualViewport.scale!=this.h_scale)
+else
 {
-this.h_scale=visualViewport.scale;
-dorovnat=visualViewport.scale;
-o.style["-webkit-transform"]="scale("+dorovnat+")"; /* prefix css */
-o.style["-ms-transform"]="scale("+dorovnat+")"; /* prefix css */
-o.style.transform="scale("+dorovnat+")";
+const d_v=parseInt(window.innerHeight)||parseInt(document.documentElement.clientHeight); // Získání aktuální výšky viewportu
+vyska=`${d_v}px`; // výška visual portu pro CSS úpravu výšky hlavního kontejneru
+}
 
-o1.style["-webkit-transform"]="scale("+dorovnat+")"; /* prefix css */
-o1.style["-ms-transform"]="scale("+dorovnat+")"; /* prefix css */
-o1.style.transform="scale("+dorovnat+")";
-}},
+
+const o=document.getElementById(this.id); // hlavní kontejner
+const o1=document.body; // body
+
+o.style.minHeight=vyska; // uprvaví minimální výšku hlavního kontejneru
+o.style.height=vyska; // uprvaví výšku hlavního kontejneru
+o.style.maxHeight=vyska;  // uprvaví maximální výšku hlavního kontejneru
+
+o1.style.minHeight=vyska; // uprvaví minimální výšku body
+o1.style.height=vyska; // uprvaví výšku body
+o1.style.maxHeight=vyska; // uprvaví maximální výšku body
+},
 
 aktivace(){
-/* Posluchače */
-window.visualViewport.addEventListener("resize", this);
-window.visualViewport.addEventListener("scroll",this);
-addEventListener("scroll",this);
+// Posluchače
+
+if(window&&window.visualViewport) // test - zda je visualViewport podporováno
+{
+window.visualViewport.addEventListener("resize",this); // pro změu okna
+window.visualViewport.addEventListener("scroll",this); // pro scroll
+}
+
+addEventListener("scroll",this); // pro scroll
 },
 
 zahajit(){
-if(window&&window.visualViewport) /* test - zda je visualViewport podporováno */
-{
-this.aktivace();
-this.handleEvent();
-}}};
-v_port.zahajit(); /* aktivuje VisualViewport API */
+this.aktivace(); // zapne poluchače událostí
+this.handleEvent(); // zapne první úpravu výšky hlavního kontajneru a body
+}
+};
 
-/* VYKRESLENÍ ČÍSEL NA PLÁTNĚ */
+v_port.zahajit(); // aktivuje VisualViewport API pro hlídání výšky body a hlavního kontejneru
+
+// VYKRESLENÍ ČÍSEL NA PLÁTNĚ
 const p={_id:["c1","c2","c3"],_width:250,_height:300,_cara_styl:"rgb(0,0,0)",_vypln_styl:"rgb(110,87,168)",_pismo:"bold 350px sans-serif",_x:[],vyk:false,
 vymaz(i){
 let obj=window.document.getElementById(this._id[i]);
@@ -96,22 +90,23 @@ return kom; /* vrátí součet čísel */
 }};
 
 
-const dia={id:[["d-v","d-vb","d-h-v"],["d-u","d-ub","d-h-u"],["d-c","d-cb","d-h-c"],["d-o","cir_1","d-h-o"]],
+const dia={
+id:[["d-v","d-vb","d-h-v"],["d-u","d-ub","d-h-u"],["d-c","d-cb","d-h-c"],["d-o","cir_1","d-h-o"]],
 
-ak(id,nad,but){ /* id=id dialogového okna; nad=id nadpisu dialogového okna; but=id button dialogového okna */
-/* provede samotnou akci otevření dialogového okna : otevření dialogového okna + aktivuje posluchač */
-let t=100; /* prodleva pro zaměření buttonu */
-document.getElementById(id).showModal(); /* otevře dialogové okno */
-document.getElementById(id).style.display="grid"; /* musí být u dialog okna vytvořen grid! */
-document.getElementById(nad).scrollIntoView({behavior:'smooth'}); /* bude scrool na nadpis, pokud by uživatel opět otevřel DIALOG a byl v něm posunut dole */
-setTimeout("document.getElementById('"+but+"').focus();",t); /* zaměří button dialogového okna */
-document.getElementById(but).addEventListener("click",this); /* přiřadí posuchače k buttonu dialogového okna */
+ak(id,nad,but){ // id=id dialogového okna; nad=id nadpisu dialogového okna; but=id button dialogového okna
+// funkce provede samotnou akci otevření dialogového okna : otevření dialogového okna + aktivuje posluchač
+let t=100; // prodleva pro zaměření buttonu
+document.getElementById(id).showModal(); // otevře dialogové okno
+document.getElementById(nad).scrollIntoView({behavior:"smooth"}); // bude scrool na nadpis, pokud by uživatel opět otevřel DIALOG a byl v něm posunut dole
+document.getElementById(but).addEventListener("click",this); // přiřadí posuchače k buttonu dialogového okna
+setTimeout(()=>{
+document.getElementById(but).focus(); // zaměří button dialogového okna
+},t); // drobné zpoždění
 },
 
 zav(id,but){ /* id=id dialogového okna; but=id button dialogového okna */
 /* funkce zavírá dialogové okno */
 document.getElementById(id).close(); /* zavře dialog okno */
-document.getElementById(id).style.display="none"; /* musí být display NONE, protože byl otevřen a zapnut display GRID */
 document.getElementById(but).removeEventListener("click",this); /*  odebere posuchače k buttonu dialogového okna  */
 },
 
@@ -136,8 +131,12 @@ else if(id==this.id[3][0])
 {
 /* DIALOG - SDĚLENÍ SE ODESÍLÁ */
 this.ak(this.id[3][0],this.id[3][2],this.id[3][1]);
-setTimeout("document.getElementById('"+this.id[3][1]+"').beginElement();",500); /* pustí animaci */
-setInterval("document.getElementById('"+this.id[3][1]+"').beginElement();",4500); /* bude pouštět animaci opět znova po jejím dokončení */
+setTimeout(()=>{
+document.getElementById(this.id[3][1]).beginElement(); // spustí animaci odesílání
+},500); // drobné zpoždění
+setInterval(()=>{
+document.getElementById(this.id[3][1]).beginElement(); // spustí animaci odesílání
+},4500); // bude pouštět animaci opět znova po jejím dokončení
 }
 },
 
@@ -152,7 +151,9 @@ if(o==this.id[0][1])
 this.zav(this.id[0][0],this.id[0][1]); /* zavře dialogové okno : id dialogového okna; id buttonu dialogového okna */
 p.zahaj(); /* načte novou sadu čísel */
 document.getElementById(sub.id_v).value=""; /* vymaže údaje z formuláře */
-setTimeout("document.getElementById('"+sub.id_v+"').focus();",100); /* zaměří formulář - zadejte výsledek */
+setTimeout(()=>{
+document.getElementById(sub.id_v).focus(); // zaměří formulář - zadejte výsledek
+},100); // drobné zpoždění
 }
 else if(o==this.id[1][1])
 {
@@ -166,36 +167,10 @@ this.zav(this.id[2][0],this.id[2][1]);
 }}};
 
 
-const od={m:["..z.","xm@","@a",".c","ri","iu","mls","z","rt","sqh","ew"],id:"f4",id_a:"ad",
+const od={
+id:"f4",
+finis(){
 
-exit(h0,h1,h2){
-/* funkce namixuje email na odeslání */
-let k="";
-k+=this.m[4].slice(h0,h1);
-k+=this.m[h2].slice(h1,h2);
-k+=this.m[5].slice(h1,h2);
-k+=this.m[9].slice(h0,h1);
-k+=this.m[h0].slice(h0,h1);
-k+=this.m[6].slice(h0,h1);
-k+=this.m[4].slice(h1,h2);
-k+=this.m[3].slice(h1,h2);
-k+=this.m[9].slice(2,3);
-k+=this.m[h2].slice(h1,h2);
-k+=this.m[6].slice(h1,h2);
-k+=this.m[h2].slice(h0,h1);
-k+=this.m[10].slice(h0,h1);
-k+=this.m[6].slice(h0,h1);
-k+=this.m[h2].slice(h1,h2);
-k+=this.m[4].slice(h1,h2);
-k+=this.m[6].slice(h1,h2);
-k+=this.m[h0].slice(h0,h1);
-k+=this.m[3].slice(h1,h2);
-k+=this.m[0].slice(h2,3);
-this.finis(k);
-},
-
-finis(hodnota){
-document.getElementById(this.id_a).value=hodnota; /* zapíše emailovou adresu do input */
 p.zahaj(); /* vykreslí čísla na plátno canvas */
 this.rez(); /* uřeže přebytečný text- pokud by někdo byl tak "dobrý", že ho manuálně překoná */
 document.getElementById(this.id).submit(); /* odešle formulář */
@@ -222,7 +197,7 @@ let n_t=o_text.substr(0,l2);
 document.getElementById(sub.r_id[3]).value=n_t;
 }}};
 
-const sub={id:["f1","f2","f3","f4"],id_m:"me",h:[0.2,0.5,0.7,1],krok:0,id_a:"aaa",id_p:"d",id_sb:["o1","o2","o3","o4"],id_z:"z",id_v:"v",b_dia:["pr1","s1","pr2","s2"],z_id:["j","e","p","obs"],r_id:["j-r","e-r","p-r","o-r"],_text:"Opravdu si přejete odeslat uvedené?",
+const sub={id:["f1","f2","f3","f4"],id_m:"me",h:[0.2,0.5,0.7,1],krok:0,id_a:"aaa",id_p:"d",id_sb:["o1","o2","o3","o4"],id_z:"z",id_v:"v",b_dia:["pr1","s1","pr2","s2"],z_id:["j","e","p","obs"],r_id:["j-r","e-r","p-r","o-r"],
 aktive(){
 document.getElementById(this.id_v).addEventListener("click",this); /* přiřadí posuchač k INPUT Výsledek - aby došlo v případě malých displejů k správnému scroolu */
 let d1=this.z_id.length;
@@ -400,16 +375,13 @@ else if(o==this.id[3])
 {
 /* požadavek na odeslání 4. formuláře - ZÁVĚR ODESÍLÁNÍ */
 let x=p.sum(); /* získá hodnotu součtu vykreslených čísel */
-if(x==parseInt(document.getElementById(this.id_v).value))
-{
-if(window.confirm(this._text))
+if(x===parseInt(document.getElementById(this.id_v).value))
 {
 /* POKUD BUDE VÝSLEDEK SPRÁVNÝ */
 dia.ot(dia.id[3][0]); /* otevře dialogové okno Odesílání */
 uloz.smaz_data(); /* vymaže případná data z LocalStorage */
 document.getElementById(this.id_v).value=""; /* vymaže zadané číslo s výsledkem */
-od.exit(0,1,2); /* dokončí proces odesílání dat z formuláře */
-}
+od.finis(); // dokončí proces odesílání dat z formuláře
 }
 else
 {

@@ -90,7 +90,7 @@ place-items:center center;
 height:100vh;
 width:100%;
 color:black;
-background:grey;
+background:white;
 font-family:"text","Arial","Sans-Serif";
 font-size:100%;
 line-height:1;
@@ -164,7 +164,6 @@ background:var(--b2);
 border:1px solid black;
 width:100%;
 height:100vh;
-max-width:64em; /* 1024px */
 }
 
 
@@ -465,18 +464,13 @@ text-align:right;
 
 dialog
 {
--ms-grid-rows:auto 1fr auto;
-grid-template-rows:auto 1fr auto;
 width:80%;
 max-width:500px;
-height:-moz-fit-content;
-height:-webkit-fit-content;
-height:fit-content;
-max-height:80%;
 border:0;
 padding:0;
 margin:auto;
 border-radius:8px;
+background-color:var(--b5);
 }
 
 dialog::-webkit-backdrop
@@ -506,6 +500,7 @@ color:white;
 {
 padding:0 1rem 0 1rem;
 overflow:auto;
+background-color:white;
 }
 
 .d-s p
