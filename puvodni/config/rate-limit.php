@@ -31,6 +31,7 @@ if (isset($data[$ipAddress])) {
 if (isset($data[$ipAddress]) && count($data[$ipAddress]) >= $limit) {
     http_response_code(429);  // 429 Too Many Requests
     echo "Překročili jste limit požadavků. Zkuste to znovu později.";
+    header("Location:ok/rate.html"); // stránka se pomocí vestavene funkce header() presměruje a script níze uz se neprovede
     exit;
 }
 

@@ -4,6 +4,5 @@ Návod implementace Kontaktní formulář
 - logo: změna textu
 - změna fóntů: při změně fontů zjistit zda text někde nepřetýká
 - změna barev
-- zmena akce.php - nutné změnit emailovou adresu a její zakódování v md5, předmět emailu!!!!
-- změna emailu musí být i v script.js 
+- změna emailu v akce.php
 - změna akce.php - $odeslano_z --- // z které webové domény byl formulář odeslán
